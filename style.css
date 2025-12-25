@@ -1,16 +1,18 @@
-/* --- 1. VARIABLES & CORE --- */
 :root {
     --p1: #00f2ff;
     --p2: #7000ff;
     --glass: rgba(255, 255, 255, 0.03);
     --border: rgba(255, 255, 255, 0.1);
+    /* Dynamic Background Variables */
+    --bg-accent: rgba(0, 242, 255, 0.15);
+    --bg-shift: 150%;
 }
 
-* { 
-    margin: 0; 
-    padding: 0; 
-    box-sizing: border-box; 
-    cursor: none !important; /* Hide system cursor for custom symbol cursor */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    cursor: none !important;
 }
 
 body {
@@ -19,21 +21,92 @@ body {
     font-family: 'Inter', sans-serif;
     height: 100vh;
     width: 100vw;
-    overflow: hidden; /* Fixes the right-side overflow issue */
+    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
+    transition: background 1s ease;
 }
 
-/* --- 2. BACKGROUND & VISUAL EFFECTS --- */
+/* --- 2. DYNAMIC BACKGROUND & PARTICLES --- */
 .mesh-gradient {
     position: fixed;
-    top: 0; left: 0; 
-    width: 100%; height: 100%;
-    background: 
-        radial-gradient(at 0% 0%, rgba(112, 0, 255, 0.15) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(0, 242, 255, 0.15) 0px, transparent 50%);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:
+        radial-gradient(at var(--bg-shift) 0%, var(--bg-accent) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(255, 255, 255, 0.05) 0px, transparent 50%);
     z-index: -1;
+    transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- 3. HOLOGRAPHIC HUD --- */
+.glass-nav {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid var(--border);
+    font-family: 'Syncopate', sans-serif;
+    letter-spacing: 5px;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+/* Holographic Scanline Effect */
+.glass-nav::before {
+    content: "";
+    position: absolute;
+    top: -100%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.05), transparent);
+    animation: scanline 4s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes scanline {
+    0% {
+        top: -100%;
+    }
+
+    100% {
+        top: 100%;
+    }
+}
+
+/* --- 4. IMPACT FRAMES --- */
+.impact-shake {
+    animation: impact 0.1s both;
+}
+
+@keyframes impact {
+
+    10%,
+    90% {
+        transform: translate3d(-2px, 0, 0) scale(1.01);
+        filter: brightness(1.5) blur(1px);
+    }
+
+    20%,
+    80% {
+        transform: translate3d(4px, 0, 0);
+    }
+
+    30%,
+    50%,
+    70% {
+        transform: translate3d(-6px, 0, 0);
+    }
+
+    40%,
+    60% {
+        transform: translate3d(6px, 0, 0);
+    }
 }
 
 canvas#particle-canvas {
@@ -48,11 +121,12 @@ canvas#particle-canvas {
 
 .cursor-glow {
     position: fixed;
-    width: 300px; 
+    width: 300px;
     height: 300px;
     background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
     pointer-events: none;
-    transform: translate(-50%, -50%) translateZ(1000px); /* Keeps cursor above 3D board */
+    transform: translate(-50%, -50%) translateZ(1000px);
+    /* Keeps cursor above 3D board */
     z-index: 9999;
     display: flex;
     justify-content: center;
@@ -67,60 +141,105 @@ canvas#particle-canvas {
     text-shadow: 0 0 20px currentColor;
 }
 
-.cursor-glow[data-symbol="X"]::after { color: var(--p1); }
-.cursor-glow[data-symbol="O"]::after { color: var(--p2); }
+.cursor-glow[data-symbol="X"]::after {
+    color: var(--p1);
+}
+
+.cursor-glow[data-symbol="O"]::after {
+    color: var(--p2);
+}
 
 /* --- 3. LAYOUT STRUCTURE --- */
 .game-container {
     width: 100%;
     max-width: 1200px;
     padding: 0 20px;
-    display: flex; 
-    flex-direction: column; 
+    display: flex;
+    flex-direction: column;
     gap: 40px;
     z-index: 10;
 }
 
 .glass-nav {
-    display: flex; 
+    display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px; 
+    padding: 20px;
     border-bottom: 1px solid var(--border);
-    font-family: 'Syncopate', sans-serif; 
+    font-family: 'Syncopate', sans-serif;
     letter-spacing: 5px;
 }
 
 .main-stage {
-    display: flex; 
-    justify-content: space-around; 
+    display: flex;
+    justify-content: space-around;
     align-items: center;
 }
 
 /* --- 4. HUD SYSTEM (SCORING & PIECES) --- */
 .player-hud {
-    text-align: center; 
+    text-align: center;
     transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    opacity: 0.3; 
+    opacity: 0.3;
     filter: grayscale(1);
 }
 
-.player-hud.active { opacity: 1; filter: grayscale(0); transform: scale(1.1); }
-.hud-x.active { color: var(--p1); text-shadow: 0 0 20px var(--p1); }
-.hud-o.active { color: var(--p2); text-shadow: 0 0 20px var(--p2); }
+.player-hud.active {
+    opacity: 1;
+    filter: grayscale(0);
+    transform: scale(1.1);
+}
 
-.symbol { font-size: 4rem; font-weight: 900; }
-.score { font-size: 1.5rem; font-weight: 700; margin-top: 10px; opacity: 0.8; }
-.slots { display: flex; gap: 5px; margin-top: 10px; justify-content: center; }
-.slot { width: 10px; height: 10px; border: 1px solid var(--border); border-radius: 50%; }
-.slot.filled { background: currentColor; box-shadow: 0 0 10px currentColor; }
+.hud-x.active {
+    color: var(--p1);
+    text-shadow: 0 0 20px var(--p1);
+}
+
+.hud-o.active {
+    color: var(--p2);
+    text-shadow: 0 0 20px var(--p2);
+}
+
+.symbol {
+    font-size: 4rem;
+    font-weight: 900;
+}
+
+.score {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-top: 10px;
+    opacity: 0.8;
+}
+
+.slots {
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
+    justify-content: center;
+}
+
+.slot {
+    width: 10px;
+    height: 10px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+}
+
+.slot.filled {
+    background: currentColor;
+    box-shadow: 0 0 10px currentColor;
+}
 
 /* --- 5. THE BOARD & CELLS --- */
-.board-wrapper { perspective: 1000px; }
+.board-wrapper {
+    perspective: 1000px;
+}
+
 .board {
-    display: grid; 
+    display: grid;
     grid-template-columns: repeat(3, 120px);
-    gap: 15px; 
+    gap: 15px;
     padding: 25px;
     background: var(--glass);
     border-radius: 30px;
@@ -129,28 +248,56 @@ canvas#particle-canvas {
     transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.board.tilt-x { transform: rotateX(10deg) rotateY(-12deg); }
-.board.tilt-o { transform: rotateX(10deg) rotateY(12deg); }
-.board:hover { transform: rotateX(0deg) rotateY(0deg) scale(1.02) !important; }
+.board.tilt-x {
+    transform: rotateX(10deg) rotateY(-12deg);
+}
+
+.board.tilt-o {
+    transform: rotateX(10deg) rotateY(12deg);
+}
+
+.board:hover {
+    transform: rotateX(0deg) rotateY(0deg) scale(1.02) !important;
+}
 
 .cell {
-    width: 120px; height: 120px;
-    background: rgba(255,255,255,0.02);
+    width: 120px;
+    height: 120px;
+    background: rgba(255, 255, 255, 0.02);
     border-radius: 20px;
-    display: flex; justify-content: center; align-items: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     transition: 0.3s;
 }
 
-.cell svg { width: 60%; height: 60%; }
-.cell.x { color: var(--p1); filter: drop-shadow(0 0 10px var(--p1)); }
-.cell.o { color: var(--p2); filter: drop-shadow(0 0 10px var(--p2)); }
+.cell svg {
+    width: 60%;
+    height: 60%;
+}
 
-path, circle {
-    stroke-dasharray: 300; stroke-dashoffset: 300;
+.cell.x {
+    color: var(--p1);
+    filter: drop-shadow(0 0 10px var(--p1));
+}
+
+.cell.o {
+    color: var(--p2);
+    filter: drop-shadow(0 0 10px var(--p2));
+}
+
+path,
+circle {
+    stroke-dasharray: 300;
+    stroke-dashoffset: 300;
     animation: draw 0.6s ease-out forwards;
 }
 
-@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes draw {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
 
 /* Fading Mechanism - Static Dimming */
 .fading {
@@ -162,17 +309,20 @@ path, circle {
 
 /* --- 6. MODAL & VICTORY EFFECTS --- */
 .modal {
-    position: fixed; 
-    inset: 0; 
+    position: fixed;
+    inset: 0;
     background: radial-gradient(circle, rgba(2, 2, 5, 0.9) 0%, rgba(0, 0, 0, 0.98) 100%);
-    display: none; 
-    justify-content: center; 
-    align-items: center; 
+    display: none;
+    justify-content: center;
+    align-items: center;
     z-index: 1000;
     backdrop-filter: blur(15px);
 }
 
-.modal.active { display: flex; animation: fadeIn 0.5s; }
+.modal.active {
+    display: flex;
+    animation: fadeIn 0.5s;
+}
 
 #winner-name {
     font-size: 5rem;
@@ -183,9 +333,19 @@ path, circle {
 }
 
 @keyframes glitch {
-    0%, 100% { transform: translate(0); }
-    33% { transform: translate(-3px, 2px); }
-    66% { transform: translate(3px, -2px); }
+
+    0%,
+    100% {
+        transform: translate(0);
+    }
+
+    33% {
+        transform: translate(-3px, 2px);
+    }
+
+    66% {
+        transform: translate(3px, -2px);
+    }
 }
 
 .winning-cell {
@@ -194,26 +354,50 @@ path, circle {
     transform: scale(1.15) translateZ(100px) !important;
 }
 
-.victory-shake { animation: shake 0.5s both; }
+.victory-shake {
+    animation: shake 0.5s both;
+}
+
 @keyframes shake {
-    0%, 100% { transform: translate3d(0, 0, 0); }
-    25% { transform: translate3d(-4px, 0, 0); }
-    75% { transform: translate3d(4px, 0, 0); }
+
+    0%,
+    100% {
+        transform: translate3d(0, 0, 0);
+    }
+
+    25% {
+        transform: translate3d(-4px, 0, 0);
+    }
+
+    75% {
+        transform: translate3d(4px, 0, 0);
+    }
 }
 
 /* --- 7. BUTTONS & CONTROLS --- */
 .btn-premium {
-    position: relative; background: none; border: none;
-    padding: 15px 40px; color: white; cursor: pointer;
-    font-family: 'Syncopate'; font-weight: bold;
+    position: relative;
+    background: none;
+    border: none;
+    padding: 15px 40px;
+    color: white;
+    cursor: pointer;
+    font-family: 'Syncopate';
+    font-weight: bold;
     z-index: 10000;
-    transition: transform 0.3s ease; /* Smooth hover transition */
+    transition: transform 0.3s ease;
+    /* Smooth hover transition */
 }
 
 .btn-blur {
-    position: absolute; inset: 0; background: linear-gradient(45deg, var(--p1), var(--p2));
-    filter: blur(15px); opacity: 0.3; border-radius: 10px;
-    transition: opacity 0.3s ease, filter 0.3s ease; /* Transition for hover effect */
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(45deg, var(--p1), var(--p2));
+    filter: blur(15px);
+    opacity: 0.3;
+    border-radius: 10px;
+    transition: opacity 0.3s ease, filter 0.3s ease;
+    /* Transition for hover effect */
 }
 
 /* Added Hover State for Reset Button */
