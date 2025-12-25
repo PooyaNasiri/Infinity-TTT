@@ -151,10 +151,44 @@ path, circle {
     transition: all 0.5s ease; /* Smoothly dims when it becomes the oldest piece */
 }
 
-/* @keyframes dissolve {
-    from { opacity: 0.8; filter: brightness(1) blur(0px); }
-    to { opacity: 0.1; filter: brightness(0.5) blur(2px); transform: scale(0.9); }
-} */
+/* --- Score Display --- */
+.score {
+    font-family: 'Syncopate', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-top: 10px;
+    letter-spacing: 2px;
+    opacity: 0.8;
+}
+
+/* --- Exciting End Game: Visual FX --- */
+.victory-shake {
+    animation: screenshake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes screenshake {
+    10%, 90% { transform: translate3d(-1px, 0, 0); }
+    20%, 80% { transform: translate3d(2px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+    40%, 60% { transform: translate3d(4px, 0, 0); }
+}
+
+.winning-cell {
+    background: rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 0 40px currentColor;
+    transform: scale(1.1) translateZ(50px);
+    z-index: 10;
+}
+
+.modal-content {
+    /* Enhanced spring animation for modal */
+    animation: modalPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes modalPop {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
 
 /* Premium Button */
 .btn-premium {
