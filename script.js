@@ -103,10 +103,10 @@ function updateUI() {
   // Shifting colors and positions based on player [UI]
   const root = document.documentElement;
   if (currentPlayer === "X") {
-    root.style.setProperty("--bg-accent", "rgba(0, 242, 255, 0.60)");
+    root.style.setProperty("--bg-accent", "rgba(0, 242, 255, 0.40)");
     root.style.setProperty("--bg-shift", "0%");
   } else {
-    root.style.setProperty("--bg-accent", "rgba(111, 0, 255, 0.60)");
+    root.style.setProperty("--bg-accent", "rgba(111, 0, 255, 0.40)");
     root.style.setProperty("--bg-shift", "100%");
   }
 
