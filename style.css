@@ -28,7 +28,7 @@ body {
     transition: background 1s ease;
 }
 
-/* --- 2. DYNAMIC BACKGROUND & PARTICLES --- */
+/* --- DYNAMIC BACKGROUND & PARTICLES --- */
 .mesh-gradient {
     position: fixed;
     top: 0;
@@ -42,18 +42,35 @@ body {
     transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* --- 3. HOLOGRAPHIC HUD --- */
+/* --- HOLOGRAPHIC HUD --- */
 .glass-nav {
     position: relative;
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     align-items: center;
-    padding: 20px;
+    padding: 20px 40px;
     border-bottom: 1px solid var(--border);
     font-family: 'Syncopate', sans-serif;
     letter-spacing: 5px;
     overflow: hidden;
     backdrop-filter: blur(10px);
+}
+
+/* Centering Logic for the Middle Block */
+.central-session-control {
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+}
+
+.session-info {
+    margin: 0;
+    font-size: 0.9rem;
+    text-align: center;
+    white-space: nowrap;
 }
 
 /* Holographic Scanline Effect */
@@ -79,7 +96,7 @@ body {
     }
 }
 
-/* --- 4. IMPACT FRAMES --- */
+/* --- IMPACT FRAMES --- */
 .impact-shake {
     animation: impact 0.05s both;
 }
@@ -126,7 +143,6 @@ canvas#particle-canvas {
     background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
     pointer-events: none;
     transform: translate(-50%, -50%) translateZ(1000px);
-    /* Keeps cursor above 3D board */
     z-index: 9999;
     display: flex;
     justify-content: center;
@@ -149,7 +165,7 @@ canvas#particle-canvas {
     color: var(--p2);
 }
 
-/* --- 3. LAYOUT STRUCTURE --- */
+/* --- LAYOUT STRUCTURE --- */
 .game-container {
     width: 100%;
     max-width: 1200px;
@@ -160,28 +176,27 @@ canvas#particle-canvas {
     z-index: 10;
 }
 
-.glass-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    border-bottom: 1px solid var(--border);
-    font-family: 'Syncopate', sans-serif;
-    letter-spacing: 5px;
-}
-
 .main-stage {
     display: flex;
     justify-content: space-around;
     align-items: center;
 }
 
-/* --- 4. HUD SYSTEM (SCORING & PIECES) --- */
+/* --- HUD SYSTEM --- */
 .player-hud {
     text-align: center;
     transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     opacity: 0.3;
     filter: grayscale(1);
+}
+
+/* Ensure left HUD and right HUD take equal space so center stays center */
+.p1 {
+    justify-self: start;
+}
+
+.p2 {
+    justify-self: end;
 }
 
 .player-hud.active {
@@ -212,26 +227,7 @@ canvas#particle-canvas {
     opacity: 0.8;
 }
 
-.slots {
-    display: flex;
-    gap: 5px;
-    margin-top: 10px;
-    justify-content: center;
-}
-
-.slot {
-    width: 10px;
-    height: 10px;
-    border: 1px solid var(--border);
-    border-radius: 50%;
-}
-
-.slot.filled {
-    background: currentColor;
-    box-shadow: 0 0 10px currentColor;
-}
-
-/* --- 5. THE BOARD & CELLS --- */
+/* --- THE BOARD & CELLS --- */
 .board-wrapper {
     perspective: 1000px;
 }
@@ -304,7 +300,6 @@ circle {
     }
 }
 
-/* Fading Mechanism - Static Dimming */
 .fading {
     opacity: 0.2;
     filter: brightness(0.5) blur(2px);
@@ -312,7 +307,7 @@ circle {
     transition: all 0.5s ease;
 }
 
-/* --- 6. MODAL & VICTORY EFFECTS --- */
+/* --- MODAL & VICTORY EFFECTS --- */
 .modal {
     position: fixed;
     inset: 0;
@@ -379,17 +374,17 @@ circle {
     }
 }
 
-/* --- 7. BUTTONS & CONTROLS --- */
+/* --- BUTTONS & CONTROLS --- */
 .btn-premium {
     position: relative;
     background: none;
     border: none;
-    padding: 15px 40px;
+    padding: 10px 25px;
     color: white;
     cursor: pointer;
     font-family: 'Syncopate';
     font-weight: bold;
-    z-index: 10000;
+    z-index: 10;
     transition: transform 0.3s ease;
 }
 
@@ -403,5 +398,5 @@ circle {
 }
 
 .btn-premium:hover {
-    transform: scale(1.05);
+    transform: scale(1.02);
 }
